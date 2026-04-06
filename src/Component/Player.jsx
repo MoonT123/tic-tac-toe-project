@@ -15,13 +15,13 @@ export default function Player({name, symbol}){
     return(
 <li>
   
-            <span className = "player"></span>
+            <span className = "player">
+            
             {playerName}
-            <span className = "player-name ">
-              {name}
-            </span>
+            
             <span className = "player-symbol">
               {symbol}
+            </span>
             </span>
             <button onClick = {whenClick}> Edit</button>
             </li>
