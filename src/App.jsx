@@ -2,16 +2,49 @@ import { useState } from "react";
 import Player from './Component/Player.jsx';
 import GameBoard from './Component/GameBoard.jsx';
 import Log from './Component/Log.jsx';
-function App() {
-  const [activePlayer, setActivePlayer] = useState("X");
-  const [gameTurn, setGameTurn] = useState([]);
-  function handleSelectedSquare(rowIndex, colIndex ){
-    setActivePlayer((curActive) => curActive === 'X' ? 'O' : 'X');
-    setGameTurn((prevTurn) => {
-      let currentPlayer = 'X';
-      if  (prevTurn.length > 0 && prevTurn[0] === 'X'){
+import {WINNING_COMBINATIONS} from './winning-combination.js';
+import GameOver from './Component/GameOver.jsx'
+const initialGameBoard = [
+    [null, null, null],
+    [null, null, null],
+    [null, null, null],
+];
+
+function deActivePlayer(gameTurn){
+  let currentPlayer = 'X';
+      if (gameTurn.length > 0 && gameTurn[0].player === 'X'){
         currentPlayer = 'O';
-      };
+      }
+      return currentPlayer;
+}
+export default function App() {
+  const [gameTurn, setGameTurn] = useState([]);
+   const activePlayer = deActivePlayer(gameTurn);
+   let gameBoard = initialGameBoard;
+    for (const  turn of gameTurn){ 
+        const {square, player} = turn;
+        const {row, col} = square;
+        gameBoard [row] [col] = player;
+
+
+    }
+    let winner = null;
+  //const [activePlayer, setActivePlayer] = useState("X");
+  for (const combination of WINNING_COMBINATIONS ){
+    const firstSquareSymbol = gameBoard[combination[0].row] [combination[0].col];
+    const secondSquareSymbol = gameBoard[combination[1].row] [combination[1].col];
+    const thirdSquareSymbol = gameBoard[combination[2].row] [combination[2].col];
+    if(firstSquareSymbol && firstSquareSymbol === secondSquareSymbol && firstSquareSymbol === thirdSquareSymbol){
+      winner = firstSquareSymbol;
+    }
+  }
+  const hasDraw = gameTurn.length === 9 && !winner;
+  
+  function handleSelectedSquare(rowIndex, colIndex ){
+   
+    //setActivePlayer((curActive) => curActive === 'X' ? 'O' : 'X');
+    setGameTurn((prevTurn) => {
+     const currentPlayer = deActivePlayer(prevTurn);
       const updatedTurn = [
         {square : {row : rowIndex, col : colIndex}, player : currentPlayer}, ...prevTurn,
       ];
@@ -26,11 +59,13 @@ function App() {
         <Player name= "Player 1" symbol = "X" isActive={activePlayer === 'X'}/>
         <Player name= "Player 2" symbol = "O" isActive={activePlayer === 'O'}/>
       </ol>
-      <GameBoard onSelectSquare = {handleSelectedSquare} turns = {gameTurn}/>
+      {(winner || hasDraw) && <GameOver winner = {winner} />}
+      <GameBoard onSelectSquare = {handleSelectedSquare} board = {gameBoard}/>
     </div>
-    <Log />
+    <Log turns = {gameTurn}/>
    </main>
+   
   )
 }
 
-export default App
+
