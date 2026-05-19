@@ -38,6 +38,7 @@ header img {
   object-fit: contain;
   margin: 3rem auto 1rem auto;
   filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.4));
+  
 }
 
 h1 {
@@ -142,6 +143,33 @@ ol {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+.controls{
+  display: flex;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.controls button{
+  background: #f6d365;
+  color: #1f1b0f;
+  border: 2px solid #f6d365;
+  padding: 0.6rem 1.4rem;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.controls button:hover{
+  background: transparent;
+  color: #f6d365;
+  transform: translateY(-2px);
+}
+
+.controls button:active{
+  transform: scale(0.96);
 }
 
 #pre-game {

@@ -23,6 +23,7 @@ export default function App() {
     O : "Players 2",
   })
   const [gameTurn, setGameTurn] = useState([]);
+  const [redoStack, setRedoStack] = useState([]);
    const activePlayer = deActivePlayer(gameTurn);
    let gameBoard = [...initialGameBoard.map(array => [...array])];
     for (const  turn of gameTurn){ 
@@ -65,9 +66,39 @@ export default function App() {
       };
     });
   }
+  function handleUndo(){
+
+  if(gameTurn.length === 0){
+    return;
+  }
+
+  const lastTurn = gameTurn[0];
+
+  // bỏ khỏi gameTurn
+  setGameTurn(prevTurns => prevTurns.slice(1));
+
+  // đẩy sang redoStack
+  setRedoStack(prevRedo => [lastTurn, ...prevRedo]);
+}
+function handleRedo(){
+
+  if(redoStack.length === 0){
+    return;
+  }
+
+  const redoTurn = redoStack[0];
+
+  // thêm lại vào gameTurn
+  setGameTurn(prevTurns => [redoTurn, ...prevTurns]);
+
+  // xoá khỏi redoStack
+  setRedoStack(prevRedo => prevRedo.slice(1));
+}
   function handleRematch(){
     setGameTurn([]);
+    setRedoStack([]);
   }
+  
 
   return (
    <main>
@@ -76,6 +107,10 @@ export default function App() {
         <Player name= "Player 1" symbol = "X" isActive={activePlayer === 'X'} onChangeName = {handlePlayerChange}/>
         <Player name= "Player 2" symbol = "O" isActive={activePlayer === 'O'} onChangeName = {handlePlayerChange}/>
       </ol>
+      <div className = "controls">
+  <button onClick={handleUndo}>Undo</button>
+  <button onClick={handleRedo}>Redo</button>
+</div>
       {(winner || hasDraw) && <GameOver winner = {winner} onRematch={handleRematch} />}
       <GameBoard onSelectSquare = {handleSelectedSquare} board = {gameBoard}/>
     </div>

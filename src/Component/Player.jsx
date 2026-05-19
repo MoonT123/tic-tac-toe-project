@@ -17,7 +17,7 @@ export default function Player({ name, symbol, isActive, onChangeName}) {
   }
   }
   let playerName = (
-    <span className="player-name">
+    <span className="player-name" >
       {editName}
     </span>
   );
